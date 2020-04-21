@@ -2,5 +2,5 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class KColor {
-  static const Color primaryColor = Color.fromRGBO(132, 95, 63, 1.0);//默认颜色
+  static const Color primaryColor = Colors.red;//默认颜色
 }
