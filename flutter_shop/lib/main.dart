@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_shop/config/index.dart';
 import 'provide/current_index_provide.dart';
 import 'package:provide/provide.dart';
+import 'package:flutter_shop/pages/index_page.dart';
 
 void main() {
   var currentIndexProvide = CurrentIndexProvide();
@@ -11,7 +12,7 @@ void main() {
 
   runApp(
     ProviderNode(
-      child: MyApp(),
+      child: IndexPage(),
       providers: providers,
     )
   );
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: KString.homeTitle,// flutter 女装商城
+      title: KString.mainTitle,// flutter 女装商城
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: KColor.primaryColor
