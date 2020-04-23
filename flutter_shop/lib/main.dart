@@ -7,9 +7,11 @@ import 'package:flutter_shop/pages/index_page.dart';
 void main() {
   var currentIndexProvide = CurrentIndexProvide();
   var providers = Providers();
+  // .. 可以添加多个状态
   providers
-    ..provide(Provider<CurrentIndexProvide>.value(currentIndexProvide));
-
+    ..provide(Provider<CurrentIndexProvide>.value(currentIndexProvide))
+  ;
+  // ProviderNode封装了InheritWidget，并且提供了 一个providers容器用于放置状态。
   runApp(
     ProviderNode(
       child: IndexPage(),
@@ -18,41 +20,3 @@ void main() {
   );
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: KString.mainTitle,// flutter 女装商城
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: KColor.primaryColor
-      ),
-      home: HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatefulWidget {
-
-  @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    return _HomePage();
-  }
-}
-
-class _HomePage extends State<HomePage> {
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold(
-      appBar: AppBar(),
-      body: Container(
-        child: RaisedButton(
-          child: Text('click me'),
-        ),
-      ),
-    );
-  }
-}

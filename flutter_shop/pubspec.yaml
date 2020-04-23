@@ -33,6 +33,7 @@ dependencies:
   sqflite: any
   flutter_html: any
   shared_preferences: any
+  flutter_easyrefresh: any
 
 dev_dependencies:
   flutter_test:

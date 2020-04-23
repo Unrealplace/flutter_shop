@@ -7,7 +7,7 @@ import 'package:flutter_shop/pages/category_page.dart';
 import 'package:flutter_shop/pages/member_page.dart';
 import 'package:flutter_shop/pages/cart_page.dart';
 import 'package:flutter_shop/provide/current_index_provide.dart';
-import 'package:flutter_screenutil/screenutil.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class IndexPage extends StatelessWidget {
   final List<BottomNavigationBarItem> bottomTabs = [
@@ -38,8 +38,6 @@ class IndexPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-//    ScreenUtil.instance = ScreenUtil(width:750.0,height:1334.0)..init(context);
-
     return Provide<CurrentIndexProvide>(
       builder: (context,child,val){
         // 取到当前索引状态值
@@ -54,6 +52,7 @@ class IndexPage extends StatelessWidget {
               currentIndex: currentIndex,
               items: bottomTabs,
               onTap: (index) {
+                // 获取对应的provide 对象
                 Provide.value<CurrentIndexProvide>(context).changeIndex(index);
               },
             ),
