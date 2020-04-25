@@ -17,7 +17,7 @@ class IndexPage extends StatelessWidget {
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.category),
-      title: Text(KString.catecoryTitle),//分类
+      title: Text(KString.categoryTitle),//分类
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.shopping_cart),//购物车
