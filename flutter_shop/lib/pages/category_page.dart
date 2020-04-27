@@ -40,6 +40,8 @@ class _CategoryPageState extends State<CategoryPage> {
   }
 }
 
+
+// 左侧的菜单
 class LeftMenuPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -49,21 +51,22 @@ class LeftMenuPage extends StatefulWidget {
 
 class _LeftMenuPage extends State<LeftMenuPage> {
 
-  List list = [];
+  List<Data> list = [];
+  // 默认选择的索引
   var listIndex = 0;
 
   @override
   void initState() {
     super.initState();
+    // 发起网络请求获取菜单数据
     _getCategoryMenu();
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Provide<CategoryProvide>(
       builder: (context,child,val){
-        //获取商品列表
+        // provide 数据index 发生变化调用
         listIndex = val.firstCategoryIndex;
 
         return Container(
@@ -79,7 +82,7 @@ class _LeftMenuPage extends State<LeftMenuPage> {
           child: ListView.builder(
             itemCount: list.length,
             itemBuilder: (context,index){
-              return Text('${index}');
+              return _leftInkWell(index);
             },
           ),
         );
@@ -87,9 +90,44 @@ class _LeftMenuPage extends State<LeftMenuPage> {
     );
   }
 
+
+  Widget _leftInkWell(int index) {
+    bool isClick = false;
+    isClick = (index == listIndex) ? true : false;
+    
+    return InkWell(
+      onTap: (){
+        var secondCategoryList = list[index].secondCategoryVO;
+        var firstCategoryId = list[index].firstCategoryId;
+        Provide.value<CategoryProvide>(context).changeFirstCategory(firstCategoryId, index);
+        Provide.value<CategoryProvide>(context).getSecondCategory(secondCategoryList, firstCategoryId);
+        _getGoodList(context,firstCategoryId: firstCategoryId);
+      },
+      child: Container(
+        height: ScreenUtil().setHeight(90),
+        padding: EdgeInsets.only(left: 8.0,top: 8.0),
+        decoration: BoxDecoration(
+          color: isClick ? Colors.cyanAccent : Colors.white,
+          border: Border(
+            bottom: BorderSide(
+              width: 2,
+              color: KColor.defaultBorderColor
+            )
+          ),
+        ),
+        child: Text(
+          list[index].firstCategoryName,
+          style: TextStyle(
+            color: isClick ? KColor.primaryColor : Colors.black,
+            fontSize: ScreenUtil().setSp(28),
+          ),
+        ),
+      ),
+    );
+  }
+
   // 获取分类数据
   _getCategoryMenu() async {
-
     await request('getCategory',formData: null).then((val){
       var data = json.decode(val.toString());
       CategoryModel categoryModel = CategoryModel.fromJson(data);
@@ -97,14 +135,29 @@ class _LeftMenuPage extends State<LeftMenuPage> {
         list = categoryModel.data;
       });
 
-      print(list);
+      Provide.value<CategoryProvide>(context).getSecondCategory(list[0].secondCategoryVO, '4');
+    });
+  }
 
-      Provide.value<CategoryProvide>(context).getSecondCategory(list[0].secondCatrgoryVO, '4');
+  _getGoodList(context,{String firstCategoryId}) {
+    var data = {
+      'firstCategoryId':firstCategoryId == null ? Provide.value<CategoryProvide>(context).firstCategoryId : firstCategoryId,
+      'secondCategoryId':Provide.value<CategoryProvide>(context).secondCategoryId,
+      'page':1,
+    };
+
+    request('getCategoryGoods',formData: data).then((val){
+
+      var data = json.decode(val.toString());
+      print(data.toString());
+      
     });
   }
 
 }
 
+
+// 右侧头部导航
 class RightTopMenuPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -113,9 +166,82 @@ class RightTopMenuPage extends StatefulWidget {
 }
 
 class _RightTopMenuPage extends State<RightTopMenuPage> {
+
+
+  Widget _rightTopInkWell(int index, SecondCategoryVO item) {
+    bool isClick = false;
+    isClick = (index == Provide.value<CategoryProvide>(context).secondCategoryIndex) ? true : false;
+
+    return InkWell(
+      onTap: (){
+        Provide.value<CategoryProvide>(context).changeSecondIndex(index, item.secondCategoryId);
+        _getGoodList(context,secondCategoryId: item.secondCategoryId);
+      },
+      child: Container(
+        height: ScreenUtil().setHeight(90),
+        padding: EdgeInsets.fromLTRB(5.0,10.0,5.0,10.0),
+        decoration: BoxDecoration(
+          color: isClick ? Colors.cyanAccent : Colors.white,
+          border: Border(
+              bottom: BorderSide(
+                  width: 2,
+                  color: KColor.defaultBorderColor
+              )
+          ),
+        ),
+        child: Text(
+          item.secondCategoryName,
+          style: TextStyle(
+            color: isClick ? KColor.primaryColor : Colors.black,
+            fontSize: ScreenUtil().setSp(28),
+          ),
+        ),
+      ),
+    );
+  }
+
+  _getGoodList(context,{String secondCategoryId}) {
+    var data = {
+      'secondCategoryId':secondCategoryId == null ? Provide.value<CategoryProvide>(context).secondCategoryId : secondCategoryId,
+      'page':1,
+    };
+
+    request('getCategoryGoods',formData: data).then((val){
+
+      var data = json.decode(val.toString());
+      print(data.toString());
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Text('xxxxx');
+    return Container(
+      child: Provide<CategoryProvide>(
+        builder: (context,child,categoryProvide){
+          return Container(
+            height: ScreenUtil().setHeight(80),
+            width: ScreenUtil().setWidth(570),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(
+                bottom: BorderSide(
+                  width: 1,
+                  color: KColor.defaultBorderColor,
+                )
+              )
+            ),
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: categoryProvide.categoryGoodList.length,
+                itemBuilder:(context,index){
+                  return _rightTopInkWell(index, categoryProvide.categoryGoodList[index]);
+                }
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 

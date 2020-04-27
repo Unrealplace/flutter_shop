@@ -5,6 +5,10 @@ import 'dart:convert';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:flutter_screenutil/screenutil.dart';
+import 'package:flutter_shop/model/category_model.dart';
+import 'package:provide/provide.dart';
+import 'package:flutter_shop/provide/category_provide.dart';
+import 'package:flutter_shop/provide/current_index_provide.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -93,7 +97,9 @@ class _HomePageState extends State<HomePage>
             );
           } else {
             return Container(
-              child: Text(KString.homeTitle),
+              child: Center(
+                child: Text(KString.noDataText),
+              ),
             );
           }
         },
@@ -175,7 +181,7 @@ class _HomePageState extends State<HomePage>
                 Row(
                   children: <Widget>[
                     Text('￥${val['presentPrice']}',style: TextStyle(
-                      color: KColor.presnetPriceTextColor,
+                      color: KColor.presentPriceTextColor,
                     ),),
                     Text('￥${val['oriPrice']}',style: TextStyle(
                       color: KColor.oriPriceTextColor,
@@ -235,10 +241,24 @@ class TopNavigator extends StatelessWidget {
   final List navigatorList;
   TopNavigator(this.navigatorList);
 
+  // 跳转分类页面
+  void _goCategory(context,index,String categoryId) async {
+      await request('getCategory',formData: null).then((val){
+        var data = json.decode(val.toString());
+        CategoryModel categoryModel = CategoryModel.fromJson(data);
+        List<Data> list = categoryModel.data;
+        Provide.value<CategoryProvide>(context).changeFirstCategory(categoryId, index);
+        Provide.value<CategoryProvide>(context).getSecondCategory(list[index].secondCategoryVO, categoryId);
+        // 改变状态跳转页面
+        Provide.value<CurrentIndexProvide>(context).changeIndex(1);
+      });
+  }
+
   Widget _gridViewItemUI(BuildContext context, item, index) {
     return InkWell(
       onTap: () {
         // 跳转分类页面
+        _goCategory(context, index, item['firstCategoryId']);
       },
       child: Column(
         children: <Widget>[
@@ -332,7 +352,7 @@ class RecommendUI extends StatelessWidget {
             Text(
               '￥${recommendList[index]['presentPrice']}',
               style: TextStyle(
-                color: KColor.presnetPriceTextColor,
+                color: KColor.presentPriceTextColor,
               ),
             ),
             Text(

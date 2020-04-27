@@ -30,6 +30,7 @@ class CategoryProvide with ChangeNotifier {
     noMoreText = '';
     SecondCategoryVO all = SecondCategoryVO('00','xx','全部',null);
     categoryGoodList = [all];
+    print(list);
     categoryGoodList.addAll(list);
     notifyListeners();
   }

@@ -9,5 +9,7 @@ class KString {
   static const String goodRecommendTitle = '商品推荐';
   static const String hotGoodsTitle = '火爆专区';
   static const String goodCategoryTitle = '商品分类';
+  static const String noDataText = '暂未数据~';
+
 
 }
