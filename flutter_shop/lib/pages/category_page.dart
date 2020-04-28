@@ -7,6 +7,9 @@ import 'package:provide/provide.dart';
 import 'package:flutter_shop/model/category_model.dart';
 import 'package:flutter_shop/provide/category_provide.dart';
 import 'package:flutter_screenutil/screenutil.dart';
+import 'package:flutter_shop/model/category_goods_list_model.dart';
+import 'package:flutter_shop/provide/category_goods_list_provide.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 
 class CategoryPage extends StatefulWidget {
 
@@ -150,7 +153,9 @@ class _LeftMenuPage extends State<LeftMenuPage> {
 
       var data = json.decode(val.toString());
       print(data.toString());
-      
+      CategoryGoodsListModel goodsListModel = CategoryGoodsListModel.fromJson(data);
+      Provide.value<CategoryGoodsListProvide>(context).getGoodsList(goodsListModel.data);
+
     });
   }
 
@@ -210,6 +215,12 @@ class _RightTopMenuPage extends State<RightTopMenuPage> {
 
       var data = json.decode(val.toString());
       print(data.toString());
+      CategoryGoodsListModel goodsListModel = CategoryGoodsListModel.fromJson(data);
+      if (goodsListModel.data == null) {
+        Provide.value<CategoryGoodsListProvide>(context).getGoodsList([]);
+      } else {
+        Provide.value<CategoryGoodsListProvide>(context).getGoodsList(goodsListModel.data);
+      }
 
     });
   }
@@ -253,9 +264,82 @@ class GoodsList extends StatefulWidget {
 }
 
 class _GoodsList extends State <GoodsList> {
+  GlobalKey<ClassicalFooterWidgetState> _footKey = GlobalKey<ClassicalFooterWidgetState>();
+  var scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
-    return Text('xxxxx');
+    return Provide<CategoryGoodsListProvide>(
+      builder: (context,child,data) {
+        try {
+          // 分类切换时滚动到顶部
+            if (Provide.value<CategoryProvide>(context).page == 1){
+              scrollController.jumpTo(0.0);
+            }
+        } catch (e) {
+
+        }
+        
+        if (data.goodsList.length > 0) {
+          return Expanded(
+            child: Container(
+              width: ScreenUtil().setWidth(570),
+              child: EasyRefresh(
+                footer: ClassicalFooter(
+                  key: _footKey,
+                  bgColor: Colors.white,
+                  textColor: KColor.refreshTextColor,
+                  infoColor: KColor.refreshTextColor,
+                  showInfo: true,
+                  noMoreText: Provide.value<CategoryProvide>(context).noMoreText,
+                  loadReadyText: KString.loadReadText,
+                ),
+                  child: ListView.builder(
+                      controller: scrollController,
+                      itemCount: data.goodsList.length,
+                      itemBuilder: (context,index) {
+                        return Text('${index}');
+                      }
+                  )
+              ),
+            ),
+          );
+        } else {
+          return null;
+        }
+        
+      },
+    );
+  }
+
+  Widget _ListWidget(List newList,int index) {
+
+    return InkWell(
+      onTap: (){
+        // TODO
+
+      },
+      child: Container(
+        padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            bottom: BorderSide(
+              width: 1.0,
+              color: KColor.defaultBorderColor,
+            )
+          )
+        ),
+        child: Row(
+          children: <Widget>[
+            Column(
+
+            ),
+          ],
+        ),
+      ),
+
+    );
   }
 }
 
