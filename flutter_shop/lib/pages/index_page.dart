@@ -8,6 +8,9 @@ import 'package:flutter_shop/pages/member_page.dart';
 import 'package:flutter_shop/pages/cart_page.dart';
 import 'package:flutter_shop/provide/current_index_provide.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../routers/routes.dart';
+import '../routers/application.dart';
+import 'package:fluro/fluro.dart';
 
 class IndexPage extends StatelessWidget {
   final List<BottomNavigationBarItem> bottomTabs = [
@@ -38,6 +41,10 @@ class IndexPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final router = Router();
+    Routes.configureRoutes(router);
+    Application.router = router;
+
     return Provide<CurrentIndexProvide>(
       builder: (context,child,val){
         // 取到当前索引状态值
@@ -61,6 +68,7 @@ class IndexPage extends StatelessWidget {
               children: tabBodies,
             ),
           ),
+          onGenerateRoute: Application.router.generator,
         );
       }
     );

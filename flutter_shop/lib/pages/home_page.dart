@@ -9,6 +9,8 @@ import 'package:flutter_shop/model/category_model.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter_shop/provide/category_provide.dart';
 import 'package:flutter_shop/provide/current_index_provide.dart';
+import '../routers/application.dart';
+import 'package:fluro/fluro.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -219,7 +221,9 @@ class SwiperDiy extends StatelessWidget {
         itemCount: swiperDataList.length,
         itemBuilder: (BuildContext cxt, int index) {
           return InkWell(
-            onTap: () {},
+            onTap: () {
+              Application.router.navigateTo(context, '/details?id=${swiperDataList[index]['goodsId']}',transition: TransitionType.native);
+            },
             child: Image.network(
               "${swiperDataList[index]['image']}",
               fit: BoxFit.cover,

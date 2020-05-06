@@ -10,6 +10,7 @@ import 'package:flutter_screenutil/screenutil.dart';
 import 'package:flutter_shop/model/category_goods_list_model.dart';
 import 'package:flutter_shop/provide/category_goods_list_provide.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CategoryPage extends StatefulWidget {
 
@@ -110,7 +111,7 @@ class _LeftMenuPage extends State<LeftMenuPage> {
         height: ScreenUtil().setHeight(90),
         padding: EdgeInsets.only(left: 8.0,top: 8.0),
         decoration: BoxDecoration(
-          color: isClick ? Colors.cyanAccent : Colors.white,
+          color: isClick ? KColor.selectedColor : Colors.white,
           border: Border(
             bottom: BorderSide(
               width: 2,
@@ -186,7 +187,7 @@ class _RightTopMenuPage extends State<RightTopMenuPage> {
         height: ScreenUtil().setHeight(90),
         padding: EdgeInsets.fromLTRB(5.0,10.0,5.0,10.0),
         decoration: BoxDecoration(
-          color: isClick ? Colors.cyanAccent : Colors.white,
+          color: isClick ? KColor.selectedColor : Colors.white,
           border: Border(
               bottom: BorderSide(
                   width: 2,
@@ -298,21 +299,38 @@ class _GoodsList extends State <GoodsList> {
                       controller: scrollController,
                       itemCount: data.goodsList.length,
                       itemBuilder: (context,index) {
-                        return Text('${index}');
+                        return _ListWidget(data.goodsList, index);
                       }
-                  )
+                  ),
+                onLoad: () async {
+                  if (Provide.value<CategoryProvide>(context).noMoreText == '没有更多数据了~') {
+                    Fluttertoast.showToast(
+                        msg: '已经到底了',
+                        toastLength: Toast.LENGTH_SHORT,
+                       gravity: ToastGravity.CENTER,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.black,
+                      textColor: Colors.white,
+                      fontSize: 16.0,
+                    );
+                  } else {
+                    _getMoreGoodsList();
+                  }
+                },
               ),
             ),
           );
         } else {
-          return null;
+          return Center(
+            child: Text('暂未数据~'),
+          );
         }
         
       },
     );
   }
 
-  Widget _ListWidget(List newList,int index) {
+  Widget _ListWidget(List<CategoryListData>newList,int index) {
 
     return InkWell(
       onTap: (){
@@ -332,14 +350,79 @@ class _GoodsList extends State <GoodsList> {
         ),
         child: Row(
           children: <Widget>[
+            _goodImage(newList, index),
             Column(
-
+             children: <Widget>[
+               _goodsName(newList, index),
+               _goodsPrice(newList, index),
+             ],
             ),
           ],
         ),
       ),
 
     );
+  }
+
+  Widget _goodImage(List<CategoryListData>newList, int index) {
+    return Container(
+      width: ScreenUtil().setWidth(180),
+      child: Image.network(newList[index].image),
+    );
+  }
+
+  Widget _goodsName(List<CategoryListData>newList,int index) {
+    return Container(
+//      padding: EdgeInsets.all(5.0),
+      width: ScreenUtil().setWidth(340),
+      child: Text(
+        newList[index].name,
+        maxLines: 3,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          fontSize: ScreenUtil().setSp(28),
+        ),
+      ),
+    );
+  }
+
+  Widget _goodsPrice(List<CategoryListData>newList,int index) {
+    return Container(
+        padding: EdgeInsets.all(5.0),
+      width: ScreenUtil().setWidth(370),
+      child: Row(
+        children: <Widget>[
+          Text(
+            '价格:￥${newList[index].presentPrice}',
+            style: TextStyle(
+              color: KColor.presentPriceTextColor,
+            ),
+          ),
+          Text(
+            '￥${newList[index].oriPrice}',
+            style: KFont.oriPriceStyle,
+          ),
+        ],
+      )
+    );
+  }
+
+  // 上拉加载更多数据
+  void _getMoreGoodsList() {
+    Provide.value<CategoryProvide>(context).addPage();
+    var data = {
+      
+    };
+    
+    request('getCategoryGoods',formData: data).then((val){
+      var data = json.decode(val.toString());
+      CategoryGoodsListModel goodsListModel = CategoryGoodsListModel.fromJson(data);
+      if (goodsListModel.data == null) {
+        Provide.value<CategoryProvide>(context).changeNoMore('没有更多数据了~');
+      } else {
+        Provide.value<CategoryGoodsListProvide>(context).addGoodsList(goodsListModel.data);
+      }
+    });
   }
 }
 

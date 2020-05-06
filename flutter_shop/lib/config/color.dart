@@ -8,5 +8,7 @@ class KColor {
   static const Color homeSubTitleTextColor = Color.fromRGBO(132, 95, 63, 1.0);//首页子标题颜色
   static const Color presentPriceTextColor = Color.fromRGBO(182, 9, 9, 1.0);//现在价格颜色
   static const Color oriPriceTextColor = Colors.black26;//原价颜色
+  static const Color selectedColor = Colors.lightBlueAccent;//选中颜色
+  static const Color detailGoodId = Colors.black26;//选中颜色
 
 }

@@ -10,6 +10,7 @@ class KString {
   static const String hotGoodsTitle = '火爆专区';
   static const String goodCategoryTitle = '商品分类';
   static const String noDataText = '暂未数据~';
+  static const String goodDetailsText = '商品详情';
 
 
 }
