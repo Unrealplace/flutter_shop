@@ -64,9 +64,6 @@ class DetailsTopArea extends StatelessWidget {
       margin: EdgeInsets.only(top: 8.0),
       child: Text(
         '编号：${num}',
-        style: TextStyle(
-          color: KColor.defaultBorderColor
-        ),
       ),
     );
   }
