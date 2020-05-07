@@ -11,5 +11,7 @@ class KColor {
   static const Color selectedColor = Colors.lightBlueAccent;//选中颜色
   static const Color detailGoodId = Colors.black26;//选中颜色
   static const Color detailTextColor = Color.fromRGBO(132, 95, 63, 1.0);//详情颜色
+  static const Color checkBoxSelectedColor = Color.fromRGBO(132, 95, 63, 1.0);//box选中颜色
+  static const Color deleteIconColor = Color.fromRGBO(132, 95, 63, 1.0);//删除颜色
 
 }

@@ -12,4 +12,7 @@ class KString {
   static const String noDataText = '暂未数据~';
   static const String goodDetailsText = '商品详情';
   static const String detailsPageExplain = '说明 > 极速送达 > 正品保证';
+  static const String addToCartText = '添加购物车';
+  static const String buyGoodsText = '马上购买';
+
 }
