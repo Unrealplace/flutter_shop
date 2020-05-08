@@ -16,7 +16,7 @@ Future request(url,{formData})async {
       // config the http client
       client.findProxy = (uri) {
         //proxy all request to localhost:8888
-        return "PROXY 192.168.1.102:8888";
+        return "PROXY 192.168.1.103:8888";
       };
       // you can also create a new HttpClient to dio
       // return new HttpClient();
