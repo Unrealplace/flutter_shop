@@ -3,6 +3,7 @@ import '../config/index.dart';
 import '../provide/cart_provide.dart';
 import 'package:provide/provide.dart';
 import './cart_page/cart_item.dart';
+import './cart_page/cart_bottom.dart';
 
 class CartPage extends StatefulWidget {
 
@@ -45,7 +46,7 @@ class _CartPageState extends State<CartPage> {
                   Positioned(
                       left: 0,
                       bottom: 0,
-                      child: Text('hhhh'),
+                      child: CartBottom(),
                   ),
                 ],
               );

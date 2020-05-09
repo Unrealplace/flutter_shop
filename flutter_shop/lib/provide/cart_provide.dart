@@ -146,4 +146,63 @@ class CartProvide with ChangeNotifier {
     await getCartInfo();
     notifyListeners();
   }
+
+  // 添加删除购物车数据
+  addOrReduceAction(CartInfoModel cartItem,bool isAdd) async {
+    // 先获取本地存储的数据
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    cartString = prefs.getString('cartInfo');//获取持久化存储的值
+    var temp = cartString == null ? [] : json.decode(cartString.toString());
+
+    int tempIndex = 0;
+    int changeIndex = -1;
+
+    // 强制转换
+    List<Map> tempList = (temp as List).cast();
+
+    tempList.forEach((item){
+      if(item['goodsId'] == cartItem.goodsId) {
+        changeIndex = tempIndex;
+      }
+      tempIndex++;
+    });
+
+    if (isAdd) {
+      cartItem.count++;
+    } else if (cartItem.count > 1) {
+      cartItem.count--;
+    }
+
+
+    if (changeIndex >= 0) {
+      tempList[changeIndex] = cartItem.toJson();
+    }
+
+    cartString = json.encode(tempList).toString();
+    prefs.setString('cartInfo', cartString);
+
+    await getCartInfo();
+    notifyListeners();
+  }
+
+  // 添加删除购物车数据
+  changeAllCheckState(bool isCheck) async {
+    // 先获取本地存储的数据
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    cartString = prefs.getString('cartInfo');//获取持久化存储的值
+    var temp = cartString == null ? [] : json.decode(cartString.toString());
+
+    // 强制转换
+    List<Map> tempList = (temp as List).cast();
+
+    for (var item in tempList) {
+      item['isCheck'] = isCheck;
+    }
+
+    cartString = json.encode(tempList).toString();
+    prefs.setString('cartInfo', cartString);
+
+    await getCartInfo();
+    notifyListeners();
+  }
 }

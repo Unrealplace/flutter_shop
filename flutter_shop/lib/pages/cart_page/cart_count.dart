@@ -15,8 +15,8 @@ class CartCount extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Container(
+      width: ScreenUtil().setWidth(45 + 45 + 84),
       margin: EdgeInsets.only(top: 5.0,left: 5.0),
-      width: ScreenUtil().setWidth(80 + 45 + 45 + 5),
       alignment: Alignment.topLeft,
       decoration: BoxDecoration(
           color: Colors.white,
@@ -39,7 +39,7 @@ class CartCount extends StatelessWidget {
 
     return InkWell(
       onTap: (){
-
+        Provide.value<CartProvide>(context).addOrReduceAction(this.item, false);
       },
 
       child: Container(
@@ -63,7 +63,7 @@ class CartCount extends StatelessWidget {
   Widget _addBtn(BuildContext context) {
     return InkWell(
       onTap: (){
-
+        Provide.value<CartProvide>(context).addOrReduceAction(this.item, true);
       },
 
       child: Container(
@@ -91,7 +91,14 @@ class CartCount extends StatelessWidget {
       height: ScreenUtil().setHeight(45),
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: Colors.red,
+        color: Colors.white,
+        border: Border.all(
+          width: 1,
+          color: KColor.defaultBorderColor
+        )
+      ),
+      child: Text(
+        '${item.count}'
       ),
     );
   }
